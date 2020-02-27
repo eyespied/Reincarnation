@@ -1,4 +1,6 @@
+<p align="center">
 ![Reincarnation](https://github.com/eyespied/Reincarnation/blob/master/images/REINCARNATION.png)
+</p>
 
 ## Project Description
 A Life simulator game that uses computational creativity to create new and interesting scenarios every time. 
