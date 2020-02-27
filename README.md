@@ -1,5 +1,5 @@
 <p align="center">
-![Reincarnation](https://github.com/eyespied/Reincarnation/blob/master/images/REINCARNATION.png)
+  <img src="https://github.com/eyespied/Reincarnation/blob/master/images/REINCARNATION.png>
 </p>
 
 ## Project Description
