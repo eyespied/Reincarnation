@@ -5,4 +5,4 @@ Reincarnation is a computationally creative game that focusses on generating a s
 
 ## Built With
 
-* [JavaSE8](https://docs.oracle.com/javase/8/docs/api/) - Programming language
+* [Python 3.6](https://www.python.org/) - Programming language
