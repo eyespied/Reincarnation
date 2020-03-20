@@ -5,18 +5,12 @@ import tkinter as tk
 def printToConsole():
     print("Print to Console")
 
-
 class GUI(tk.Frame):
 
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
         self.parent = parent
         self.initialize_user_interface()
-
-    def on_configure(self):
-        # update scroll region after starting 'mainloop'
-        # when all widgets are in canvas
-        self.scrollbar.configure(scrollregion=self.textBox.bbox('all'))
 
     def initialize_user_interface(self):
         # Create Menu Bar
@@ -30,26 +24,26 @@ class GUI(tk.Frame):
         menuBar.add_cascade(label="About", menu=helpMenu)
         self.parent.config(menu=menuBar)
 
+        # Creates Frame for Generated Text
+        self.textBox = tk.Frame(self.parent, width=500, height=400, bg="white")
+        self.textBox.place(x=190, y=100, relx=0, rely=0.01)
+
         # Creates Frame for Header
         self.header = tk.Frame(self.parent, width=900, height=100, bg="green")
         self.header.place(x=0, y=0, relx=0, rely=0)
 
-        # Creates Frame for Generated Text
-        self.textBox = tk.Canvas(self.parent, width=500, height=400, bg="white")
-        self.textBox.place(x=190, y=100, relx=0, rely=0.01)
+        self.labelYear = tk.Label(self.textBox, text="Year X", font=20, width=30, height=2)
+        self.labelYear.place(x=110, y=10, relx=0, rely=0)
 
-        # Creates scroll bar for text frame
-        self.scrollbar = tk.Scrollbar(self.parent, command=self.textBox.yview)
-        self.scrollbar.place(x=677, y=100, relx=0, rely=0.01)
+        story = """abcdefghijklmnopsssssssssssssqrstuvwxyzssssssss"""
 
-        self.textBox.configure(yscrollcommand=self.scrollbar.set)
-        self.textBox.bind('<Configure>', self.on_configure())
+        self.labelStory = tk.Label(self.textBox, text=story, font=10, width=55)
+        self.labelStory.place(x=0, y=100, relx=0, rely=0)
 
-        self.frame = tk.Frame(self.textBox)
-        self.textBox.create_window((0, 0), window=self.frame)
+
 
         # Creates Frame for Lower Buttons
-        self.lowerThirdFrame = tk.Frame(self.parent, width=900, height=100,)
+        self.lowerThirdFrame = tk.Frame(self.parent, width=900, height=100, )
         self.lowerThirdFrame.place(x=0, y=500, relx=0, rely=0)
 
         self.buttonBar = tk.Frame(self.lowerThirdFrame, width=900, height=100, bg="red")
