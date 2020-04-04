@@ -5,7 +5,6 @@ __version__ = "1.0"
 # Import necessary libraries
 import os
 import signal
-import time
 import tkinter as tk
 from tkinter import messagebox
 
@@ -34,6 +33,8 @@ def exportStory():
 
 class GUI(tk.Frame):
     root = None
+    markov.getRandomName(5)
+    markov.getRandomLocations(5)
 
     def __init__(self, parent, master=None, width=0.6, height=0.4, useFactor=True):
         tk.Frame.__init__(self, master)
@@ -129,7 +130,7 @@ class GUI(tk.Frame):
                                    command=self.updateStory)
         self.buttonTwo.place(in_=self.buttonBar, x=350, y=14, relx=0, rely=0)
         self.buttonThree = tk.Button(self.buttonBar, width=10, height=2, text="Reset", font=("Helvetica", 16),
-                                     command=printToConsole)
+                                     command=self.resetStory)
         self.buttonThree.place(in_=self.buttonBar, x=705, y=14, relx=0, rely=0)
 
         # Updates the text label with the current story string
@@ -150,7 +151,6 @@ class GUI(tk.Frame):
         if not start_story:
 
             if not nameChosen:
-                print("test")
                 self.labelYear.config(text='')
                 text = "Enter your character's name"
                 self.name_text = tk.Label(self.parent, text=text, font=("Helvetica", 16),
@@ -168,7 +168,7 @@ class GUI(tk.Frame):
             # Once name has been chosen destroy the name label and begin the story.
             if nameChosen:
                 self.name_text.destroy()
-                markov.startStory()
+                markov.updateStory(year)
                 current_string += markov.current_string + "\n"
                 # Increments year by 1.
                 year = 1
@@ -211,16 +211,35 @@ class GUI(tk.Frame):
         # Starts the story and increments the year by one.
         # Concatenates all of the text into 'story' to be used later.
         else:
-            markov.startStory()
+            markov.updateStory(year)
             current_string += markov.current_string + "\n"
             year += 1
             current_year = "Year " + str(year)
 
             story += current_year + "\n\n" + current_string + "\n"
-            print(story)
 
             self.labelStory.config(text=current_string)
             self.labelYear.config(text=current_year)
+
+    def resetStory(self):
+        global empty
+        global story
+        global current_string
+        global year
+        global start_story
+        global name
+        msgBox = tk.messagebox.askquestion('Reincarnation', 'Are you sure you want to reset without saving?\n'
+                                                            'File > Save Story to save.', icon='warning')
+        if msgBox == 'yes':
+            story = empty
+            current_string = empty
+            name = empty
+            year = 0
+            start_story = False
+            self.labelYear.destroy()
+            self.labelStory.destroy()
+        else:
+            pass
 
 
 # Declared global variables that need to be reset every time.
@@ -230,3 +249,4 @@ year = 0
 start_story = False
 name = ''
 nameChosen = False
+empty = ''
