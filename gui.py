@@ -9,7 +9,10 @@ import tkinter as tk
 from tkinter import messagebox
 
 from PIL import Image, ImageTk
+
+import dictionary
 import markov
+
 
 def printToConsole():
     print("Print to Console")
@@ -130,23 +133,21 @@ class GUI(tk.Frame):
                                      command=self.resetStory)
         self.buttonThree.place(in_=self.buttonBar, x=705, y=14, relx=0, rely=0)
 
-        # Updates the text label with the current story string
-
-    def startStory(self):
-        global story
-        global year
-        global start_story
-        global current_string
-        global name
-        global nameChosen
-
-        # If story had already started prompt with an error message
-        if start_story:
-            messagebox.showerror("Reincarnation", "Error: Story in progress\n\nPress Reset to start again.\n")
-
-        # If story hasn't started, ask for a name variable.
+        # Disables initial buttons if story is not in progress
         if not start_story:
+            self.buttonTwo.config(state='disabled')
+            self.buttonThree.config(state='disabled')
 
+    # When the 'START' button has been pressed this function is called.
+    def startStory(self):
+        global story, year, start_story, current_string, name, nameChosen
+
+        # Disables start button
+        self.buttonOne.config(state='disabled')
+
+        # If story hasn't started, ask for a character name
+        if not start_story:
+            # If name hasn't been selected run character name creation:
             if not nameChosen:
                 self.labelYear.config(text='')
                 text = "Enter your character's name"
@@ -156,8 +157,6 @@ class GUI(tk.Frame):
                 self.name_box = tk.Entry(self.parent, width=20, font=("Helvetica", 16))
                 self.name_box.place(x=310, y=200, relx=0, rely=0)
 
-                print(name)
-
                 self.buttonFour = tk.Button(self.parent, width=10, height=2, text="Submit", font=("Helvetica", 16),
                                             command=self.nameUpdate)
                 self.buttonFour.place(in_=self.parent, x=370, y=250, relx=0, rely=0)
@@ -165,84 +164,80 @@ class GUI(tk.Frame):
             # Once name has been chosen destroy the name label and begin the story.
             if nameChosen:
                 self.name_text.destroy()
-                markov.getRandomName(5)
-                markov.getRandomLocations(5)
-                markov.updateStory(year)
+
+                # Initializes the story parameters
+                dictionary.initializeCharacters()
+                dictionary.initializeCountry()
+                dictionary.characterInfo()
+
+                # Resets Advance Year and Reset buttons to enabled.
+                self.buttonTwo.config(state='normal')
+                self.buttonThree.config(state='normal')
+
+                start_story = True
+                markov.updateStory(0)
                 current_string += markov.current_string + "\n"
                 # Increments year by 1.
                 year = 1
                 current_year = "Year " + str(year)
-
                 # Appends the story
                 story += current_year + "\n\n" + current_string + "\n"
-
                 # Sets labels to the variables defined above.
                 self.labelStory.config(text=current_string)
                 self.labelYear.config(text=current_year)
-                # Start story set to true.
-                start_story = True
 
     # If name has been submitted it runs this function that updates the name_text label and destroys several GUI items.
     def nameUpdate(self):
-        global name
-        global nameChosen
+        global name, nameChosen
+        nameChosen = True
         name = self.name_box.get()
         self.name_text.config(text="Character Name: " + name + "\n Press 'START' again to begin!")
-        nameChosen = True
+        self.buttonOne.config(state='normal')
         self.buttonFour.destroy()
         self.name_box.destroy()
 
     # When user presses Advance Year, this function is run.
     def updateStory(self):
-        global story
-        global year
-        global start_story
-        global current_string
+        global story, year, current_string
 
         # Sets the new labelStory to empty, to remove the previous year.
         current_string = ''
         self.labelStory.config(text='')
 
-        # If the story hasn't begun yet the user cannot advance the story.
-        if not start_story:
-            messagebox.showerror("Reincarnation", "Error: Press start to begin!")
-
-        # Starts the story and increments the year by one.
         # Concatenates all of the text into 'story' to be used later.
-        else:
-            markov.updateStory(year)
-            current_string += markov.current_string + "\n"
-            year += 1
-            current_year = "Year " + str(year)
+        markov.updateStory(year)
+        dictionary.characterInfo()
+        current_string += markov.current_string + "\n"
+        year += 1
+        current_year = "Year " + str(year)
 
-            story += current_year + "\n\n" + current_string + "\n"
+        story += current_year + "\n\n" + current_string + "\n"
 
-            self.labelStory.config(text=current_string)
-            self.labelYear.config(text=current_year)
+        self.labelStory.config(text=current_string)
+        self.labelYear.config(text=current_year)
 
     def resetStory(self):
-        global empty
-        global story
-        global current_string
-        global year
-        global start_story
-        global name
+        global empty, story, current_string, year, start_story, name, nameChosen
         msgBox = tk.messagebox.askquestion('Reincarnation', 'Are you sure you want to reset without saving?\n'
                                                             'File > Save Story to save.', icon='warning')
         if msgBox == 'yes':
             story = empty
             current_string = empty
             name = empty
+            nameChosen = False
             year = 0
             start_story = False
-            self.labelYear.destroy()
-            self.labelStory.destroy()
+            self.labelStory.config(text="")
+            self.labelYear.config(text="")
+            self.buttonTwo.config(state='disabled')
+            self.buttonThree.config(state='disabled')
+            self.startStory()
         else:
             pass
 
 
-# Declared global variables that need to be reset every time.
-story = ''
+# Declared global variables
+story = ""
 current_string = ''
 year = 0
 start_story = False

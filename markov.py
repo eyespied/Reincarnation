@@ -13,91 +13,8 @@ current_year_story = ''
 duplicate = False
 
 
-def getRandomName(counter):
-    # Stores a list of names from first-names.txt
-    names_file = open("data/first-names.txt", 'r', encoding="utf8")
-    names = names_file.readlines()
-    name_list = []
-    chosen_names = []
-
-    # Adds all names to a list
-    for line in names:
-        values = [line.strip()]
-        name_list.append(values)
-
-    # Depending on counter specified in gui, choose random name from the names list and add it to chosen names.
-    # Replaces the rejected characters with null
-    # Chooses a random name based on the a random, length of the names list.
-    for i in range(counter):
-        random_value = random.randint(0, len(name_list))
-        convert_name = str(name_list[random_value])
-        chosen_names.append(convert_name.replace("'", "").replace("[", "").replace("]", ""))
-
-    setStoryNames(chosen_names)
-
-
-# Same function as above but for locations
-def getRandomLocations(counter):
-    location_file = open("data/locations.txt", 'r', encoding="utf8")
-    locations = location_file.readlines()
-    location_list = []
-    chosen_locations = []
-
-    for line in locations:
-        values = [line.strip()]
-        location_list.append(values)
-
-    for i in range(counter):
-        random_value = random.randint(0, len(location_list))
-        convert_name = str(location_list[random_value])
-        chosen_locations.append(convert_name.replace("'", "").replace("[", "").replace("]", ""))
-
-    setLocationName(chosen_locations)
-
-
-location_one = ''
-location_two = ''
-
-
-def setLocationName(location):
-    global location_one
-    global location_two
-
-    location_one = str(location[0])
-    location_two = str(location[1])
-    print("Location one: " + location_one)
-    print("Location two: " + location_two)
-
-
-# Initializes story name variables
-family_one = ''
-family_two = ''
-friend_one = ''
-friend_two = ''
-relationship = ''
-
-
-def setStoryNames(names):
-    global family_one
-    global family_two
-    global friend_one
-    global friend_two
-    global relationship
-
-    family_one = str(names[0])
-    family_two = str(names[1])
-    friend_one = str(names[2])
-    friend_two = str(names[3])
-    relationship = str(names[4])
-
-    # Prints out the randomly generated names.
-    print("Family one: " + family_one)
-    print("Family two: " + family_two)
-    print("Friend one: " + friend_one)
-    print("Friend two: " + friend_two)
-    print("Relationship: " + relationship)
-
-
+# TODO: Figure out how to have different markov chains for different year ranges
+#   - Fill out these stories
 def updateStory(year):
     global current_string
     global current_year_story
@@ -131,6 +48,8 @@ def updateStory(year):
 
     current_year_story = ''
 
+# TODO: Split this into its own function, that takes a parameter 'age group' that relates to a story filename.txt
+
     # Creates three sentences from markov chain
     start_sentence_one = model.make_short_sentence(150, tries=100)
     start_sentence_two = model.make_short_sentence(150, tries=100)
@@ -153,8 +72,7 @@ def updateStory(year):
         duplicate = False
         # Current string concatenates the three sentences together
         original_string = start_sentence_one + "\n" + start_sentence_two + "\n" + start_sentence_three
-        current_string = original_string.replace("Name", name).replace("Bob", family_one).replace("Alice", family_two)\
-            .replace("United Kingdom", location_one)
+        current_string = original_string.replace("Name", name)
 
         # Story adds all current strings together
         story += current_string + "\n"
