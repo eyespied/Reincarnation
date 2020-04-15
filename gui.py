@@ -218,9 +218,9 @@ class GUI(tk.Frame):
 
     def resetStory(self):
         global empty, story, current_string, year, start_story, name, nameChosen
-        msgBox = tk.messagebox.askquestion('Reincarnation', 'Are you sure you want to reset without saving?\n'
+        msgbox = tk.messagebox.askquestion('Reincarnation', 'Are you sure you want to reset without saving?\n'
                                                             'File > Save Story to save.', icon='warning')
-        if msgBox == 'yes':
+        if msgbox == 'yes':
             story = empty
             current_string = empty
             name = empty

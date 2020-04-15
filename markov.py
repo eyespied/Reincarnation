@@ -3,7 +3,6 @@ __credits__ = ["James Clark"]
 __version__ = "1.0"
 
 # Import necessary libraries
-import random
 import markovify
 import gui
 
@@ -11,44 +10,50 @@ current_string = ''
 story = ''
 current_year_story = ''
 duplicate = False
+year = None
+
+periods = ['born', 'toddler', 'earlylife', 'teen', 'youngadult', 'adult', 'elderly']
+current_period = periods[0]
 
 
-# TODO: Figure out how to have different markov chains for different year ranges
-#   - Fill out these stories
-def updateStory(year):
-    global current_string
-    global current_year_story
-    global story
-    global duplicate
-
+# Updates the story depending on which period the program is up to.
+def updateStory(current_year):
+    global year, current_period
+    year = current_year
     # if year in range(0, 2):
-    with open("texts/born.txt", encoding="utf8") as f:
-        born = f.read()
-        model = markovify.Text(born, state_size=2)
+    if year in range(0, 2):
+        current_period = periods[0]
+        templateStory(current_period)
+    elif year in range(2, 5):
+        current_period = periods[1]
+        templateStory(current_period)
+    elif year in range(5, 12):
+        current_period = periods[2]
+        templateStory(current_period)
+    elif year in range(12, 18):
+        current_period = periods[3]
+        templateStory(current_period)
+    elif year in range(18, 30):
+        current_period = periods[4]
+        templateStory(current_period)
+    elif year in range(30, 50):
+        current_period = periods[5]
+        templateStory(current_period)
+    else:
+        current_period = periods[6]
+        templateStory(current_period)
 
-    # if year in range(2, 5):
-    # print("Early Life")
 
-    # if year in range(5, 12):
-    # print("Childhood")
+model = None
 
-    # if year in range(12, 18):
-    # print("Teenage Years")
 
-    # if year in range(18, 30):
-    # print("Early Adulthood")
-
-    # if year in range(30, 50):
-    # print("Adulthood")
-
-    # if year in range(50, 1000):
-    # print("Older")
-
+# Function that opens the specific period markov.txt file
+def templateStory(period):
+    global model, story, current_string, duplicate
     name = gui.name
-
-    current_year_story = ''
-
-# TODO: Split this into its own function, that takes a parameter 'age group' that relates to a story filename.txt
+    with open("texts/{}.txt".format(period), encoding="utf8") as f:
+        period = f.read()
+        model = markovify.Text(period, state_size=2)
 
     # Creates three sentences from markov chain
     start_sentence_one = model.make_short_sentence(150, tries=100)
@@ -74,5 +79,4 @@ def updateStory(year):
         original_string = start_sentence_one + "\n" + start_sentence_two + "\n" + start_sentence_three
         current_string = original_string.replace("Name", name)
 
-        # Story adds all current strings together
-        story += current_string + "\n"
+    story += current_string + "\n"

@@ -5,6 +5,7 @@ __version__ = "1.0"
 # Import libraries
 import random
 import gui
+import markov
 
 characters = {}
 
@@ -59,19 +60,22 @@ def initializeCountry():
     # List of countries that can be chosen
     countries = ['United Kingdom', 'USA', 'Japan', 'Germany', 'France', 'China']
     random_value = random.randint(0, len(countries))
+    # Stores the country in a variable based on the random value
     starting_location = countries[random_value - 1]
+    # Stores all cities for that country
     cities = location.get(starting_location)[0]
     random_value = random.randint(0, len(cities))
+    # Stores a city based on the country and their list items randomly
     starting_city = cities[random_value - 1]
-    health_system = location.get(starting_location)[1]
+    # Stores the health_system for the chosen country
+    health_system = [location.get(starting_location)[1]]
+    # Converts the list item into a floating point
+    x = list(map(str, health_system[0]))
+    health_system = float(x[0])
 
-# TODO: Convert health system into a float
 
 age = 1
 
-# TODO: Add additional information to the character:
-#   - Friends
-#   - Relationship
 
 personal_health = 1
 chance_of_death = 0
@@ -89,7 +93,8 @@ def characterInfo():
                  'COD': chance_of_death, 'wealth': wealth,
                  'occupation': occupation,
                  'parents': [characters['character_one'], characters['character_two']],
-                 'relationship': relationship
+                 'relationship': relationship,
+                 'period': markov.current_period
                  }
     print(character)
 
