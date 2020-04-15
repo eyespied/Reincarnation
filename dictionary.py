@@ -40,45 +40,57 @@ def initializeCharacters():
 
 
 # Location dictionary
-location = {'United Kingdom': ['London', 'Canterbury', 'Oxford', 'Manchester'],
-            'USA': ['New York', 'Los Angeles', 'San Fransisco'], 'Japan': ['Tokyo', 'Kyoto', 'Osaka'],
-            'Germany': ['Berlin', 'Munich', 'Frankfurt'], 'France': ['Paris', 'Nice', 'Lyon'],
-            'China': ['Beijing', 'Shanghai', 'Shenzhen']}
+location = {'United Kingdom': [['London', 'Canterbury', 'Oxford', 'Manchester'], ['0.7']],
+            'USA': [['New York', 'Los Angeles', 'San Fransisco'], ['0.8']],
+            'Japan': [['Tokyo', 'Kyoto', 'Osaka'], ['0.8']],
+            'Germany': [['Berlin', 'Munich', 'Frankfurt'], ['0.8']],
+            'France': [['Paris', 'Nice', 'Lyon'], ['0.7']],
+            'China': [['Beijing', 'Shanghai', 'Shenzhen'], ['0.6']]}
 
 starting_city = ''
+starting_location = ''
+health_system = 0
 
 
 # Initializes the country where the character is from.
 # Randomly select a starting city for the character to begin.
 def initializeCountry():
-    global starting_city
+    global starting_city, starting_location, health_system
     # List of countries that can be chosen
-    countries = ['United Kingdom', 'USA', 'Germany', 'China']
+    countries = ['United Kingdom', 'USA', 'Japan', 'Germany', 'France', 'China']
     random_value = random.randint(0, len(countries))
     starting_location = countries[random_value - 1]
-    cities = location.get(starting_location)
+    cities = location.get(starting_location)[0]
     random_value = random.randint(0, len(cities))
     starting_city = cities[random_value - 1]
+    health_system = location.get(starting_location)[1]
 
+# TODO: Convert health system into a float
 
-age = 0
-
+age = 1
 
 # TODO: Add additional information to the character:
-#   - Health
 #   - Friends
-#   - Siblings
-#   - Occupation
-#   - COD (Change of death)
-#   - Wealth
 #   - Relationship
+
+personal_health = 1
+chance_of_death = 0
+wealth = 0
+occupation = None
+relationship = None
+
 
 def characterInfo():
     global age
     age = gui.year
     # Storing the characters information in a dictionary to be accessed
-    character = {'name': gui.name, 'age': age, 'location': starting_city, 'parents': [characters['character_one'],
-                                                                                      characters['character_two']]}
+    character = {'name': gui.name, 'age': age, 'country': starting_location, 'city': starting_city,
+                 'health_system': health_system, 'personal_health': personal_health,
+                 'COD': chance_of_death, 'wealth': wealth,
+                 'occupation': occupation,
+                 'parents': [characters['character_one'], characters['character_two']],
+                 'relationship': relationship
+                 }
     print(character)
 
 # TODO: Saving information about the story to a list (dict?), so the markov chains can use it in future to improve
