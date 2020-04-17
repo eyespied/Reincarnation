@@ -51,6 +51,7 @@ location = {'United Kingdom': [['London', 'Canterbury', 'Oxford', 'Manchester'],
 starting_city = ''
 starting_location = ''
 health_system = 0
+countries = ['United Kingdom', 'USA', 'Japan', 'Germany', 'France', 'China']
 
 
 # Initializes the country where the character is from.
@@ -58,7 +59,6 @@ health_system = 0
 def initializeCountry():
     global starting_city, starting_location, health_system
     # List of countries that can be chosen
-    countries = ['United Kingdom', 'USA', 'Japan', 'Germany', 'France', 'China']
     random_value = random.randint(0, len(countries))
     # Stores the country in a variable based on the random value
     starting_location = countries[random_value - 1]
@@ -73,9 +73,11 @@ def initializeCountry():
     x = list(map(str, health_system[0]))
     health_system = float(x[0])
 
+    # Initial chance of death
+    chanceOfDeath(int(health_system * 10))
+
 
 age = 1
-
 
 personal_health = 1
 chance_of_death = 0
@@ -98,5 +100,44 @@ def characterInfo():
                  }
     print(character)
 
-# TODO: Saving information about the story to a list (dict?), so the markov chains can use it in future to improve
-#  the story.
+
+random_val = 0
+
+
+# Generates a random floating point for the chance of death
+def chanceOfDeath(counter):
+    global chance_of_death, random_val
+
+    for i in range(counter):
+        random_val += round(random.uniform(0, 0.08), 2)
+
+    chance_of_death = random_val
+
+
+# Updates chance of death depending on the year
+def updateChanceOfDeath(current_year):
+    if current_year in range(0, 2):
+        chanceOfDeath(int(health_system * 10))
+
+    elif current_year in range(2, 5):
+        chanceOfDeath(int(health_system * 5))
+
+    elif current_year in range(5, 12):
+        chanceOfDeath(int(health_system * 5))
+
+    elif current_year in range(12, 18):
+        chanceOfDeath(int(health_system * 5))
+
+    elif current_year in range(18, 30):
+        chanceOfDeath(int(health_system * 10))
+
+    elif current_year in range(30, 50):
+        chanceOfDeath(int(health_system * 15))
+
+    else:
+        chanceOfDeath(int(health_system * 15))
+
+
+
+
+

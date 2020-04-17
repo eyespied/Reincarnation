@@ -4,6 +4,8 @@ __version__ = "1.0"
 
 # Import necessary libraries
 import markovify
+
+import dictionary
 import gui
 
 current_string = ''
@@ -42,6 +44,9 @@ def updateStory(current_year):
     else:
         current_period = periods[6]
         templateStory(current_period)
+
+    # Updates chance of death
+    dictionary.updateChanceOfDeath(int(year))
 
 
 model = None

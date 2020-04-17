@@ -199,11 +199,11 @@ class GUI(tk.Frame):
     # When user presses Advance Year, this function is run.
     def updateStory(self):
         global story, year, current_string
-
+        # Checks if chance of death is 100.
+        self.checkDeath()
         # Sets the new labelStory to empty, to remove the previous year.
         current_string = ''
         self.labelStory.config(text='')
-
         # Concatenates all of the text into 'story' to be used later.
         markov.updateStory(year)
         dictionary.characterInfo()
@@ -216,10 +216,18 @@ class GUI(tk.Frame):
         self.labelStory.config(text=current_string)
         self.labelYear.config(text=current_year)
 
+    # Function that checks if chance of death is 100% then enters end-game state
+    def checkDeath(self):
+        if dictionary.chance_of_death >= 100:
+            self.buttonOne.config(state='disabled')
+            self.buttonTwo.config(state='disabled')
+            tk.messagebox.showinfo('Reincarnation', '{} has died! Thanks for playing.\n'
+                                                    'Story has been saved successfully.'.format(name))
+            exportStory()
+
     def resetStory(self):
         global empty, story, current_string, year, start_story, name, nameChosen
-        msgbox = tk.messagebox.askquestion('Reincarnation', 'Are you sure you want to reset without saving?\n'
-                                                            'File > Save Story to save.', icon='warning')
+        msgbox = tk.messagebox.askquestion('Reincarnation', 'Are you sure you want to reset?\n', icon='warning')
         if msgbox == 'yes':
             story = empty
             current_string = empty
@@ -232,6 +240,8 @@ class GUI(tk.Frame):
             self.buttonTwo.config(state='disabled')
             self.buttonThree.config(state='disabled')
             self.startStory()
+            dictionary.chance_of_death = 0
+            dictionary.random_val = 0
         else:
             pass
 

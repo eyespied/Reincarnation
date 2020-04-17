@@ -23,8 +23,6 @@ def death(location):
             result = prob_of_death * 100
             print("Probability of death: " + str(result) + "%")
 
-
-
     if location == "United Kingdom":
         death_multiplier = 0.5
 
