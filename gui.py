@@ -1,6 +1,6 @@
 __author__ = "James Clark"
 __credits__ = ["James Clark"]
-__version__ = "1.0"
+__version__ = "2.0"
 
 # Import necessary libraries
 import os
@@ -10,8 +10,7 @@ from tkinter import messagebox
 
 from PIL import Image, ImageTk
 
-import dictionary
-import markov
+import story
 
 
 def printToConsole():
@@ -30,7 +29,7 @@ def closeQuestion():
 
 def exportStory():
     with open("generated_stories/{}'s Story.txt".format(name), "w") as text_file:
-        text_file.write(story)
+        text_file.write(story.export_story)
 
 
 class GUI(tk.Frame):
@@ -140,7 +139,7 @@ class GUI(tk.Frame):
 
     # When the 'START' button has been pressed this function is called.
     def startStory(self):
-        global story, year, start_story, current_string, name, nameChosen
+        global start_story, name, nameChosen, counter, current_period, current_string
 
         # Disables start button
         self.buttonOne.config(state='disabled')
@@ -165,26 +164,24 @@ class GUI(tk.Frame):
             if nameChosen:
                 self.name_text.destroy()
 
-                # Initializes the story parameters
-                dictionary.initializeCharacters()
-                dictionary.initializeCountry()
-                dictionary.characterInfo()
+                # Initializes the story
+                story.createStory()
+                start_story = True
 
                 # Resets Advance Year and Reset buttons to enabled.
                 self.buttonTwo.config(state='normal')
                 self.buttonThree.config(state='normal')
 
-                start_story = True
-                markov.updateStory(0)
-                current_string += markov.current_string + "\n"
-                # Increments year by 1.
-                year = 1
-                current_year = "Year " + str(year)
-                # Appends the story
-                story += current_year + "\n\n" + current_string + "\n"
+                # Sets initial period
+                counter = 0
+                current_period = "Period: " + str(period[counter])
+
+                # Sets initial text for first period
+                current_string = story.final[counter]
+
                 # Sets labels to the variables defined above.
                 self.labelStory.config(text=current_string)
-                self.labelYear.config(text=current_year)
+                self.labelYear.config(text=current_period)
 
     # If name has been submitted it runs this function that updates the name_text label and destroys several GUI items.
     def nameUpdate(self):
@@ -198,58 +195,41 @@ class GUI(tk.Frame):
 
     # When user presses Advance Year, this function is run.
     def updateStory(self):
-        global story, year, current_string
-        # Checks if chance of death is 100.
-        self.checkDeath()
-        # Sets the new labelStory to empty, to remove the previous year.
-        current_string = ''
-        self.labelStory.config(text='')
-        # Concatenates all of the text into 'story' to be used later.
-        markov.updateStory(year)
-        dictionary.characterInfo()
-        current_string += markov.current_string + "\n"
-        year += 1
-        current_year = "Year " + str(year)
+        global counter, current_period, current_string
+        # TODO: Print next period in story
+        # Increments period by one each time button is pressed
+        counter += 1
+        current_period = "Period: " + str(period[counter])
 
-        story += current_year + "\n\n" + current_string + "\n"
-
+        # Increments story to the next period.
+        current_string = story.final[counter]
         self.labelStory.config(text=current_string)
-        self.labelYear.config(text=current_year)
-
-    # Function that checks if chance of death is 100% then enters end-game state
-    def checkDeath(self):
-        if dictionary.chance_of_death >= 100:
-            self.buttonOne.config(state='disabled')
-            self.buttonTwo.config(state='disabled')
-            tk.messagebox.showinfo('Reincarnation', '{} has died! Thanks for playing.\n'
-                                                    'Story has been saved successfully.'.format(name))
-            exportStory()
+        self.labelYear.config(text=current_period)
 
     def resetStory(self):
-        global empty, story, current_string, year, start_story, name, nameChosen
+        global empty, start_story, name, nameChosen, current_period, current_string
         msgbox = tk.messagebox.askquestion('Reincarnation', 'Are you sure you want to reset?\n', icon='warning')
         if msgbox == 'yes':
-            story = empty
-            current_string = empty
+            start_story = False
             name = empty
             nameChosen = False
-            year = 0
-            start_story = False
+            current_period = None
+            current_string = None
+
             self.labelStory.config(text="")
             self.labelYear.config(text="")
             self.buttonTwo.config(state='disabled')
             self.buttonThree.config(state='disabled')
             self.startStory()
-            dictionary.chance_of_death = 0
-            dictionary.random_val = 0
         else:
             pass
 
 
 # Declared global variables
-story = ""
-current_string = ''
-year = 0
+current_string = None
+current_period = None
+period = ['Born', 'Toddler', 'Early Life', 'Teen', 'Young Adult', 'Adult', 'Elderly']
+counter = 0
 start_story = False
 name = ''
 nameChosen = False

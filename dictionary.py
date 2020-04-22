@@ -29,7 +29,7 @@ def initializeCharacters():
     # Chooses a random name based on the a random, length of the names list.
     for i in range(5):
         random_value = random.randint(0, len(name_list))
-        convert_name = str(name_list[random_value])
+        convert_name = str(name_list[random_value - 1])
         chosen_names.append(convert_name.replace("'", "").replace("[", "").replace("]", ""))
 
     # Adds five random names to a character
@@ -77,41 +77,29 @@ def initializeCountry():
     chanceOfDeath(int(health_system * 10))
 
 
-age = 1
+age = 0
 
-personal_health = 1
+personal_health = 100
 chance_of_death = 0
 wealth = 0
 occupation = None
 relationship = None
-
-
-def characterInfo():
-    global age
-    age = gui.year
-    # Storing the characters information in a dictionary to be accessed
-    character = {'name': gui.name, 'age': age, 'country': starting_location, 'city': starting_city,
-                 'health_system': health_system, 'personal_health': personal_health,
-                 'COD': chance_of_death, 'wealth': wealth,
-                 'occupation': occupation,
-                 'parents': [characters['character_one'], characters['character_two']],
-                 'relationship': relationship,
-                 'period': markov.current_period
-                 }
-    print(character)
-
+accident = False
+global_character = None
 
 random_val = 0
+var = 0
 
 
 # Generates a random floating point for the chance of death
 def chanceOfDeath(counter):
-    global chance_of_death, random_val
+    global chance_of_death, random_val, personal_health, var
 
     for i in range(counter):
-        random_val += round(random.uniform(0, 0.08), 2)
+        random_val += round(random.uniform(0, 0.12), 2)
 
     chance_of_death = random_val
+    var = personal_health - random_val
 
 
 # Updates chance of death depending on the year
@@ -136,8 +124,6 @@ def updateChanceOfDeath(current_year):
 
     else:
         chanceOfDeath(int(health_system * 15))
-
-
 
 
 
