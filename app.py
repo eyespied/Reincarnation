@@ -6,7 +6,7 @@ __version__ = "2.0"
 from gui import GUI
 import tkinter as tk
 
-# exec(open('splashscreen.py').read())
+#exec(open('splashscreen.py').read())
 root = tk.Tk()
 run = GUI(root)
 root.mainloop()

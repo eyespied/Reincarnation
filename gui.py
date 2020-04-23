@@ -196,22 +196,44 @@ class GUI(tk.Frame):
     # When user presses Advance Year, this function is run.
     def updateStory(self):
         global counter, current_period, current_string
-        # TODO: Print next period in story
+
         # Increments period by one each time button is pressed
         counter += 1
-        current_period = "Period: " + str(period[counter])
+        if period[counter] == 'End':
+            self.thanksForPlaying()
 
-        # Increments story to the next period.
-        current_string = story.final[counter]
-        self.labelStory.config(text=current_string)
-        self.labelYear.config(text=current_period)
+        else:
+            current_period = "Period: " + str(period[counter])
 
+            # Increments story to the next period.
+            current_string = story.final[counter]
+
+            # Changes GUI Labels to represent the period information.
+            self.labelStory.config(text=current_string)
+            self.labelYear.config(text=current_period)
+
+# Once story has finished, save the story and show info box.
+    def thanksForPlaying(self):
+
+        # Disables buttons
+        self.buttonOne.config(state='disabled')
+        self.buttonTwo.config(state='disabled')
+        self.labelYear.config(text='The End')
+        # Displays info box
+        tk.messagebox.showinfo('Reincarnation', 'Thanks for playing!\nThe story has been saved.')
+
+        # Saves the story
+        exportStory()
+
+    # Resets all variables and labels to default to start generating a new story again.
     def resetStory(self):
-        global empty, start_story, name, nameChosen, current_period, current_string
+        global start_story, name, nameChosen, current_period, current_string
+
         msgbox = tk.messagebox.askquestion('Reincarnation', 'Are you sure you want to reset?\n', icon='warning')
+
         if msgbox == 'yes':
             start_story = False
-            name = empty
+            name = None
             nameChosen = False
             current_period = None
             current_string = None
@@ -228,9 +250,8 @@ class GUI(tk.Frame):
 # Declared global variables
 current_string = None
 current_period = None
-period = ['Born', 'Toddler', 'Early Life', 'Teen', 'Young Adult', 'Adult', 'Elderly']
+period = ['Born', 'Toddler', 'Early Life', 'Teen', 'Young Adult', 'Adult', 'Elderly', 'End']
 counter = 0
 start_story = False
 name = ''
 nameChosen = False
-empty = ''

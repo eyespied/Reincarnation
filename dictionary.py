@@ -4,8 +4,6 @@ __version__ = "1.0"
 
 # Import libraries
 import random
-import gui
-import markov
 
 characters = {}
 
