@@ -7,9 +7,7 @@ import os
 import signal
 import tkinter as tk
 from tkinter import messagebox
-
 from PIL import Image, ImageTk
-
 import story
 
 
@@ -42,6 +40,7 @@ class GUI(tk.Frame):
         self.name_box = None
         self.buttonFour = None
         self.chosen_name = None
+        self.creditsInfo = None
 
         self.parent = parent
         # Window dimensions
@@ -68,13 +67,9 @@ class GUI(tk.Frame):
 
         fileMenu = tk.Menu(menuBar, tearoff=0)
         fileMenu.add_command(label="Save Story", command=exportStory)
+        fileMenu.add_command(label="Credits", command=self.credits)
         fileMenu.add_command(label="Quit", command=closeQuestion)
         menuBar.add_cascade(label="File", menu=fileMenu)
-
-        helpMenu = tk.Menu(menuBar, tearoff=0)
-        helpMenu.add_command(label="Help", command=printToConsole)
-        helpMenu.add_command(label="Credits", command=printToConsole)
-        menuBar.add_cascade(label="About", menu=helpMenu)
         self.parent.config(menu=menuBar)
 
         # Creates canvas, which is a child of root and sets the size of the window
@@ -125,7 +120,7 @@ class GUI(tk.Frame):
         self.buttonOne = tk.Button(self.buttonBar, width=10, height=2, text="Start", font=("Helvetica", 16),
                                    command=self.startStory)
         self.buttonOne.place(in_=self.buttonBar, x=60, y=14, relx=0, rely=0)
-        self.buttonTwo = tk.Button(self.buttonBar, width=15, height=2, text="Advance Year", font=("Helvetica", 16),
+        self.buttonTwo = tk.Button(self.buttonBar, width=15, height=2, text="Advance Period", font=("Helvetica", 16),
                                    command=self.updateStory)
         self.buttonTwo.place(in_=self.buttonBar, x=350, y=14, relx=0, rely=0)
         self.buttonThree = tk.Button(self.buttonBar, width=10, height=2, text="Reset", font=("Helvetica", 16),
@@ -212,7 +207,7 @@ class GUI(tk.Frame):
             self.labelStory.config(text=current_string)
             self.labelYear.config(text=current_period)
 
-# Once story has finished, save the story and show info box.
+    # Once story has finished, save the story and show info box.
     def thanksForPlaying(self):
 
         # Disables buttons
@@ -237,6 +232,7 @@ class GUI(tk.Frame):
             nameChosen = False
             current_period = None
             current_string = None
+            story.export_story = ''
 
             self.labelStory.config(text="")
             self.labelYear.config(text="")
@@ -245,6 +241,18 @@ class GUI(tk.Frame):
             self.startStory()
         else:
             pass
+
+    def credits(self):
+        global start_story
+
+        if not start_story:
+            text = "REINCARNATION \n VERSION: 2.0\n""AUTHOR: JAMES CLARK"
+            # Label to place generated text
+            self.creditsInfo = tk.Label(self.textBox, text=text, font=10, width=54, bg="white")
+            self.creditsInfo.place(x=3, y=300, relx=0, rely=0)
+            self.creditsInfo.after(4000, self.creditsInfo.destroy)
+        else:
+            tk.messagebox.showerror('Reincarnation', 'Error: Story in progress!')
 
 
 # Declared global variables
